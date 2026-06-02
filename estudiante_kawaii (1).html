@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✨ Mi Agenda Kawaii ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rosa: #FFB6C1;
+    --rosa-oscuro: #E8879A;
+    --rosa-claro: #FFE4EC;
+    --rosa-palido: #FFF0F5;
+    --negro: #1a1a2e;
+    --negro-suave: #2d2d44;
+    --lila: #D4B8E0;
+    --lila-claro: #F0E6F8;
+    --blanco: #fff;
+    --gris: #f8f0f5;
+    --texto: #2d2d44;
+    --texto-suave: #7a6a7d;
+    --sombra: 0 4px 20px rgba(232, 135, 154, 0.18);
+    --sombra-card: 0 8px 32px rgba(232, 135, 154, 0.14);
+    --radio: 18px;
+    --radio-sm: 10px;
+    --verde-pastel: #b8e0d2;
+    --amarillo-pastel: #fdebd0;
+    --aprobado: #7ec8a4;
+    --reprobado: #e8879a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #FFF0F5 0%, #F0E6F8 50%, #FFF0F5 100%);
+    min-height: 100vh;
+    color: var(--texto);
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -80px; right: -80px;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(255,182,193,0.35) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -60px; left: -60px;
+    width: 260px; height: 260px;
+    background: radial-gradient(circle, rgba(212,184,224,0.3) 0%, transparent 70%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ====== HEADER ====== */
+  header {
+    background: linear-gradient(135deg, var(--negro) 0%, var(--negro-suave) 100%);
+    color: #fff;
+    padding: 1.2rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 4px 24px rgba(26,26,46,0.25);
+    position: relative;
+    z-index: 10;
+  }
+  .header-bow {
+    font-size: 2rem;
+    filter: drop-shadow(0 2px 6px rgba(255,182,193,0.5));
+    animation: bowBounce 2s ease-in-out infinite;
+  }
+  @keyframes bowBounce {
+    0%,100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-4px) rotate(5deg); }
+  }
+  header h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2rem;
+    background: linear-gradient(90deg, var(--rosa), var(--lila), #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  header p { font-size: 0.82rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
+
+  .header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  #fecha-header {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.55);
+    text-align: right;
+  }
+
+  /* ====== NAV TABS ====== */
+  .nav-tabs {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1.2rem 2rem 0;
+    position: relative;
+    z-index: 5;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    padding: 0.55rem 1.2rem;
+    border-radius: 40px;
+    border: 2.5px solid transparent;
+    background: rgba(255,255,255,0.75);
+    color: var(--texto-suave);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(232,135,154,0.1);
+  }
+  .tab-btn:hover {
+    background: var(--rosa-claro);
+    border-color: var(--rosa-oscuro);
+    color: var(--negro);
+    transform: translateY(-1px);
+  }
+  .tab-btn.active {
+    background: linear-gradient(135deg, var(--negro), var(--negro-suave));
+    color: #fff;
+    border-color: var(--rosa-oscuro);
+    box-shadow: 0 4px 16px rgba(26,26,46,0.22);
+  }
+  .tab-btn .emoji { font-size: 1rem; }
+
+  /* ====== MAIN LAYOUT ====== */
+  main {
+    padding: 1.5rem 2rem 3rem;
+    position: relative;
+    z-index: 1;
+  }
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; } }
+
+  /* ====== CARD BASE ====== */
+  .card {
+    background: rgba(255,255,255,0.9);
+    border-radius: var(--radio);
+    box-shadow: var(--sombra-card);
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+    border: 1.5px solid rgba(255,182,193,0.25);
+    backdrop-filter: blur(8px);
+  }
+  .card-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.4rem;
+    color: var(--negro);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* ====== DASHBOARD ====== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: linear-gradient(135deg, var(--negro), var(--negro-suave));
+    border-radius: var(--radio);
+    padding: 1.2rem;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(26,26,46,0.2);
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: -20px; right: -20px;
+    width: 70px; height: 70px;
+    background: rgba(255,182,193,0.15);
+    border-radius: 50%;
+  }
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--rosa);
+    display: block;
+  }
+  .stat-label {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.7);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .stat-emoji { font-size: 1.3rem; margin-bottom: 0.3rem; display: block; }
+
+  /* Horario hoy */
+  .hoy-titulo {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.3rem;
+    color: var(--negro);
+    margin-bottom: 0.8rem;
+  }
+  .evento-hoy {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.7rem 1rem;
+    border-radius: var(--radio-sm);
+    margin-bottom: 0.5rem;
+    background: var(--rosa-palido);
+    border-left: 4px solid var(--rosa-oscuro);
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+  .evento-hoy .hora { color: var(--texto-suave); font-size: 0.8rem; min-width: 50px; }
+  .evento-hoy.examen { border-left-color: var(--negro); background: #f0f0f8; }
+  .evento-hoy.tarea { border-left-color: var(--aprobado); background: #f0faf6; }
+
+  /* próximas tareas resumen */
+  .prox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: var(--radio-sm);
+    margin-bottom: 0.5rem;
+    background: var(--gris);
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .prox-item:hover { background: var(--rosa-claro); }
+  .prox-badge {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 700;
+    background: var(--rosa-oscuro);
+    color: #fff;
+    white-space: nowrap;
+  }
+  .prox-badge.urgente { background: var(--negro); }
+
+  /* ====== HORARIO ====== */
+  .horario-controles {
+    display: flex;
+    gap: 0.7rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .dias-nav {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .dia-btn {
+    padding: 0.4rem 0.9rem;
+    border-radius: 30px;
+    border: 2px solid var(--rosa);
+    background: transparent;
+    color: var(--texto);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .dia-btn:hover, .dia-btn.active {
+    background: var(--negro);
+    color: #fff;
+    border-color: var(--negro);
+  }
+
+  .horario-tabla {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 6px;
+  }
+  .horario-tabla thead th {
+    font-size: 0.78rem;
+    color: var(--texto-suave);
+    font-weight: 700;
+    padding: 0 0.8rem 0.3rem;
+    text-align: left;
+  }
+  .horario-row {
+    background: rgba(255,255,255,0.9);
+    border-radius: var(--radio-sm);
+    box-shadow: 0 2px 8px rgba(232,135,154,0.1);
+  }
+  .horario-row td {
+    padding: 0.7rem 0.8rem;
+    font-size: 0.88rem;
+  }
+  .horario-row td:first-child { border-radius: var(--radio-sm) 0 0 var(--radio-sm); color: var(--texto-suave); font-size: 0.8rem; }
+  .horario-row td:last-child { border-radius: 0 var(--radio-sm) var(--radio-sm) 0; }
+  .materia-color {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  /* ====== FORMULARIO ====== */
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.9rem;
+    margin-bottom: 0.9rem;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+  .form-group label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--texto-suave);
+    letter-spacing: 0.02em;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.6rem 0.9rem;
+    border: 2px solid rgba(255,182,193,0.4);
+    border-radius: var(--radio-sm);
+    background: rgba(255,255,255,0.9);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    color: var(--texto);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--rosa-oscuro);
+    box-shadow: 0 0 0 3px rgba(232,135,154,0.12);
+  }
+  .form-group textarea { resize: vertical; min-height: 70px; }
+
+  .btn-primary {
+    padding: 0.65rem 1.5rem;
+    background: linear-gradient(135deg, var(--negro), var(--negro-suave));
+    color: #fff;
+    border: none;
+    border-radius: 40px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 14px rgba(26,26,46,0.22);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26,26,46,0.3);
+    background: linear-gradient(135deg, var(--negro-suave), var(--rosa-oscuro));
+  }
+  .btn-secondary {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    color: var(--texto-suave);
+    border: 2px solid rgba(255,182,193,0.5);
+    border-radius: 40px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { background: var(--rosa-claro); border-color: var(--rosa-oscuro); color: var(--negro); }
+
+  /* ====== TAREAS LIST ====== */
+  .filtros {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .filtro-btn {
+    padding: 0.35rem 0.9rem;
+    border-radius: 30px;
+    border: 2px solid rgba(255,182,193,0.4);
+    background: transparent;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--texto-suave);
+  }
+  .filtro-btn:hover, .filtro-btn.active {
+    background: var(--negro);
+    color: #fff;
+    border-color: var(--negro);
+  }
+
+  .tarea-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+    padding: 1rem 1.2rem;
+    background: rgba(255,255,255,0.9);
+    border-radius: var(--radio);
+    margin-bottom: 0.7rem;
+    box-shadow: 0 3px 12px rgba(232,135,154,0.1);
+    border-left: 4px solid var(--rosa);
+    transition: all 0.2s;
+    position: relative;
+  }
+  .tarea-item:hover { transform: translateX(3px); box-shadow: var(--sombra-card); }
+  .tarea-item.completa { opacity: 0.6; border-left-color: var(--aprobado); }
+  .tarea-item.completa .tarea-nombre { text-decoration: line-through; }
+  .tarea-item.examen { border-left-color: var(--negro); }
+  .tarea-item.urgente { border-left-color: var(--reprobado); }
+
+  .check-btn {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 2.5px solid var(--rosa-oscuro);
+    background: transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-top: 2px;
+  }
+  .check-btn.checked { background: var(--aprobado); border-color: var(--aprobado); }
+  .check-btn.checked::after { content: '✓'; color: #fff; font-size: 0.75rem; font-weight: 900; }
+
+  .tarea-info { flex: 1; min-width: 0; }
+  .tarea-nombre { font-weight: 800; font-size: 0.95rem; margin-bottom: 0.2rem; }
+  .tarea-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+  .tag {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 700;
+  }
+  .tag-materia { background: var(--lila-claro); color: #6a4a8a; }
+  .tag-tipo-tarea { background: var(--rosa-claro); color: var(--rosa-oscuro); }
+  .tag-tipo-examen { background: #f0f0f8; color: var(--negro); }
+  .tag-tipo-proyecto { background: var(--amarillo-pastel); color: #8a6a2a; }
+  .tag-fecha { font-size: 0.78rem; color: var(--texto-suave); }
+  .tag-urgente { background: #ffe0e6; color: var(--reprobado); }
+
+  .tarea-acciones { display: flex; gap: 0.4rem; flex-shrink: 0; }
+  .icon-btn {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,182,193,0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+  .icon-btn:hover { background: var(--rosa-claro); transform: scale(1.1); }
+  .icon-btn.del:hover { background: #ffe0e6; }
+
+  /* ====== NOTAS ====== */
+  .nota-item {
+    background: rgba(255,255,255,0.9);
+    border-radius: var(--radio);
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 0.7rem;
+    box-shadow: 0 3px 12px rgba(232,135,154,0.1);
+    border-top: 4px solid var(--rosa);
+    position: relative;
+  }
+  .nota-item.examen { border-top-color: var(--negro); }
+  .nota-item.proyecto { border-top-color: var(--lila); }
+
+  .nota-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.7rem;
+    flex-wrap: wrap;
+  }
+  .nota-materia { font-weight: 800; font-size: 0.95rem; }
+  .nota-tipo { font-size: 0.75rem; color: var(--texto-suave); font-weight: 600; }
+
+  .nota-num {
+    font-size: 2rem;
+    font-weight: 900;
+    margin-left: auto;
+  }
+  .nota-num.aprobado { color: var(--aprobado); }
+  .nota-num.reprobado { color: var(--reprobado); }
+  .nota-num.excelente { color: #8a6adc; }
+
+  .nota-comentario {
+    font-size: 0.82rem;
+    color: var(--texto-suave);
+    font-style: italic;
+    margin-top: 0.3rem;
+  }
+
+  .promedio-banner {
+    background: linear-gradient(135deg, var(--negro), var(--negro-suave));
+    color: #fff;
+    border-radius: var(--radio);
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.3rem;
+  }
+  .promedio-banner .valor {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--rosa);
+  }
+  .promedio-banner .label { font-size: 0.85rem; color: rgba(255,255,255,0.7); }
+
+  /* ====== POMODORO ====== */
+  .timer-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+  }
+  .timer-ring {
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: conic-gradient(var(--rosa-oscuro) 0%, transparent 0%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 0 0 8px var(--rosa-claro), 0 8px 32px rgba(232,135,154,0.25);
+  }
+  .timer-inner {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: var(--negro);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .timer-display {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--rosa);
+    letter-spacing: -2px;
+  }
+  .timer-label { font-size: 0.7rem; color: rgba(255,255,255,0.6); font-weight: 600; margin-top: 2px; }
+  .timer-btns { display: flex; gap: 0.8rem; }
+
+  .btn-timer {
+    padding: 0.6rem 1.4rem;
+    border-radius: 40px;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-timer.start { background: var(--negro); color: #fff; }
+  .btn-timer.start:hover { background: var(--rosa-oscuro); }
+  .btn-timer.reset { background: var(--rosa-claro); color: var(--negro); }
+  .btn-timer.reset:hover { background: var(--rosa); }
+
+  .pomodoro-config {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .pomo-mode-btn {
+    padding: 0.4rem 1rem;
+    border-radius: 30px;
+    border: 2px solid var(--rosa);
+    background: transparent;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--texto-suave);
+  }
+  .pomo-mode-btn.active { background: var(--negro); color: #fff; border-color: var(--negro); }
+
+  .pomo-sesiones {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--texto-suave);
+    font-weight: 600;
+  }
+  .pomo-sesiones span { color: var(--rosa-oscuro); font-weight: 900; font-size: 1.1rem; }
+
+  /* ====== EMPTY STATE ====== */
+  .empty-state {
+    text-align: center;
+    padding: 2.5rem;
+    color: var(--texto-suave);
+  }
+  .empty-state .emoji { font-size: 3rem; display: block; margin-bottom: 0.8rem; }
+  .empty-state p { font-size: 0.9rem; }
+
+  /* ====== CONFETTI ANIMATION ====== */
+  .confetti-piece {
+    position: fixed;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    animation: confettiFall 1.5s ease-out forwards;
+  }
+  @keyframes confettiFall {
+    0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(200px) rotate(720deg); }
+  }
+
+  /* ====== MODAL ====== */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,26,46,0.55);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease;
+  }
+  .modal-box {
+    background: #fff;
+    border-radius: var(--radio);
+    padding: 2rem;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(26,26,46,0.25);
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    background: var(--rosa-claro);
+    border: none;
+    border-radius: 50%;
+    width: 32px; height: 32px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .modal-close:hover { background: var(--rosa); }
+
+  /* ====== TOAST ====== */
+  .toast {
+    position: fixed;
+    bottom: 1.5rem; right: 1.5rem;
+    background: var(--negro);
+    color: #fff;
+    padding: 0.7rem 1.2rem;
+    border-radius: 40px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    z-index: 9999;
+    box-shadow: 0 6px 24px rgba(26,26,46,0.3);
+    animation: toastIn 0.3s ease, toastOut 0.3s ease 2.2s forwards;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateY(20px); } }
+
+  /* ====== RESPONSIVE ====== */
+  @media (max-width: 600px) {
+    header { padding: 1rem; }
+    main { padding: 1rem; }
+    .nav-tabs { padding: 0.8rem 1rem 0; gap: 0.4rem; }
+    .tab-btn { padding: 0.45rem 0.9rem; font-size: 0.82rem; }
+    header h1 { font-size: 1.5rem; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--rosa-palido); }
+  ::-webkit-scrollbar-thumb { background: var(--rosa); border-radius: 10px; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="header-bow">🎀</span>
+  <div>
+    <h1>Mi Agenda Kawaii</h1>
+    <p>Organizada y adorable ✨</p>
+  </div>
+  <div class="header-right">
+    <div id="fecha-header"></div>
+  </div>
+</header>
+
+<nav class="nav-tabs">
+  <button class="tab-btn active" onclick="showSection('dashboard')" data-tab="dashboard">
+    <span class="emoji">🏠</span> Inicio
+  </button>
+  <button class="tab-btn" onclick="showSection('horario')" data-tab="horario">
+    <span class="emoji">📅</span> Horario
+  </button>
+  <button class="tab-btn" onclick="showSection('tareas')" data-tab="tareas">
+    <span class="emoji">📝</span> Tareas
+  </button>
+  <button class="tab-btn" onclick="showSection('notas')" data-tab="notas">
+    <span class="emoji">⭐</span> Notas
+  </button>
+  <button class="tab-btn" onclick="showSection('pomodoro')" data-tab="pomodoro">
+    <span class="emoji">🍅</span> Pomodoro
+  </button>
+</nav>
+
+<main>
+
+  <!-- ============ DASHBOARD ============ -->
+  <section id="dashboard" class="section active">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-emoji">📝</span>
+        <span class="stat-num" id="stat-pendientes">0</span>
+        <span class="stat-label">Tareas pendientes</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-emoji">✅</span>
+        <span class="stat-num" id="stat-completas">0</span>
+        <span class="stat-label">Completadas</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-emoji">📚</span>
+        <span class="stat-num" id="stat-examenes">0</span>
+        <span class="stat-label">Exámenes prox.</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-emoji">⭐</span>
+        <span class="stat-num" id="stat-promedio">—</span>
+        <span class="stat-label">Promedio general</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🗓️ Próximas entregas</div>
+      <div id="proximas-lista">
+        <div class="empty-state"><span class="emoji">🌸</span><p>Aún no hay tareas. ¡Agrega una!</p></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">💬 Motivación del día</div>
+      <div id="frase-dia" style="font-size:1.05rem;color:var(--texto);line-height:1.6;font-style:italic;text-align:center;padding:0.5rem;"></div>
+    </div>
+  </section>
+
+  <!-- ============ HORARIO ============ -->
+  <section id="horario" class="section">
+    <div class="card">
+      <div class="card-title">📅 Mi Horario Semanal</div>
+      <div class="dias-nav" id="dias-nav">
+        <button class="dia-btn active" onclick="selectDia('Lunes')" data-dia="Lunes">Lun</button>
+        <button class="dia-btn" onclick="selectDia('Martes')" data-dia="Martes">Mar</button>
+        <button class="dia-btn" onclick="selectDia('Miércoles')" data-dia="Miércoles">Mié</button>
+        <button class="dia-btn" onclick="selectDia('Jueves')" data-dia="Jueves">Jue</button>
+        <button class="dia-btn" onclick="selectDia('Viernes')" data-dia="Viernes">Vie</button>
+        <button class="dia-btn" onclick="selectDia('Sábado')" data-dia="Sábado">Sáb</button>
+      </div>
+      <div id="horario-contenido" style="margin-top:1rem;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">➕ Agregar clase</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Materia</label>
+          <input id="h-materia" type="text" placeholder="Ej: Cálculo">
+        </div>
+        <div class="form-group">
+          <label>Día</label>
+          <select id="h-dia">
+            <option>Lunes</option><option>Martes</option><option>Miércoles</option>
+            <option>Jueves</option><option>Viernes</option><option>Sábado</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Hora inicio</label>
+          <input id="h-inicio" type="time">
+        </div>
+        <div class="form-group">
+          <label>Hora fin</label>
+          <input id="h-fin" type="time">
+        </div>
+        <div class="form-group">
+          <label>Aula/Lugar</label>
+          <input id="h-aula" type="text" placeholder="Ej: A-204">
+        </div>
+        <div class="form-group">
+          <label>Color</label>
+          <input id="h-color" type="color" value="#FFB6C1" style="height:40px;padding:2px 4px;cursor:pointer;">
+        </div>
+      </div>
+      <button class="btn-primary" onclick="agregarClase()">🎀 Agregar clase</button>
+    </div>
+  </section>
+
+  <!-- ============ TAREAS ============ -->
+  <section id="tareas" class="section">
+    <div class="card">
+      <div class="card-title">➕ Nueva tarea / examen</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input id="t-nombre" type="text" placeholder="Ej: Parcial de Química">
+        </div>
+        <div class="form-group">
+          <label>Materia</label>
+          <input id="t-materia" type="text" placeholder="Ej: Química">
+        </div>
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="t-tipo">
+            <option value="tarea">📝 Tarea</option>
+            <option value="examen">📚 Examen</option>
+            <option value="proyecto">🎨 Proyecto</option>
+            <option value="deber">✏️ Deber</option>
+            <option value="exposicion">🎤 Exposición</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Fecha entrega</label>
+          <input id="t-fecha" type="date">
+        </div>
+        <div class="form-group">
+          <label>Prioridad</label>
+          <select id="t-prioridad">
+            <option value="normal">🟡 Normal</option>
+            <option value="alta">🔴 Alta</option>
+            <option value="baja">🟢 Baja</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:0.9rem">
+        <label>Notas</label>
+        <textarea id="t-notas" placeholder="Temas a estudiar, instrucciones, etc..."></textarea>
+      </div>
+      <button class="btn-primary" onclick="agregarTarea()">🌸 Agregar</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 Mis Tareas</div>
+      <div class="filtros">
+        <button class="filtro-btn active" onclick="filtrarTareas('todas')">Todas</button>
+        <button class="filtro-btn" onclick="filtrarTareas('pendiente')">Pendientes</button>
+        <button class="filtro-btn" onclick="filtrarTareas('completa')">Completadas</button>
+        <button class="filtro-btn" onclick="filtrarTareas('examen')">Exámenes</button>
+        <button class="filtro-btn" onclick="filtrarTareas('tarea')">Tareas</button>
+        <button class="filtro-btn" onclick="filtrarTareas('proyecto')">Proyectos</button>
+      </div>
+      <div id="tareas-lista"></div>
+    </div>
+  </section>
+
+  <!-- ============ NOTAS ============ -->
+  <section id="notas" class="section">
+    <div id="promedio-banner-wrap"></div>
+
+    <div class="card">
+      <div class="card-title">➕ Registrar nota</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Materia</label>
+          <input id="n-materia" type="text" placeholder="Ej: Matemáticas">
+        </div>
+        <div class="form-group">
+          <label>Tipo de evaluación</label>
+          <select id="n-tipo">
+            <option value="tarea">📝 Tarea</option>
+            <option value="examen">📚 Examen</option>
+            <option value="proyecto">🎨 Proyecto</option>
+            <option value="parcial">📋 Parcial</option>
+            <option value="final">🏆 Final</option>
+            <option value="quiz">⚡ Quiz</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nota (sobre 10)</label>
+          <input id="n-valor" type="number" min="0" max="10" step="0.01" placeholder="Ej: 8.5">
+        </div>
+        <div class="form-group">
+          <label>Nota mínima aprobatoria</label>
+          <input id="n-minima" type="number" min="0" max="10" step="0.01" value="7" placeholder="7">
+        </div>
+        <div class="form-group">
+          <label>Fecha</label>
+          <input id="n-fecha" type="date">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:0.9rem">
+        <label>Comentarios</label>
+        <textarea id="n-comentario" placeholder="Ej: Me fue bien en la parte de algebra..."></textarea>
+      </div>
+      <button class="btn-primary" onclick="agregarNota()">⭐ Guardar nota</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📊 Mis Notas</div>
+      <div id="notas-lista"></div>
+    </div>
+  </section>
+
+  <!-- ============ POMODORO ============ -->
+  <section id="pomodoro" class="section">
+    <div class="card" style="max-width:400px;margin:0 auto;">
+      <div class="card-title" style="justify-content:center;">🍅 Técnica Pomodoro</div>
+
+      <div class="pomodoro-config" style="margin-bottom:1.5rem;">
+        <button class="pomo-mode-btn active" onclick="setMode('trabajo',25)" data-mode="trabajo">🧠 Trabajo (25 min)</button>
+        <button class="pomo-mode-btn" onclick="setMode('descanso_corto',5)" data-mode="descanso_corto">☕ Descanso (5 min)</button>
+        <button class="pomo-mode-btn" onclick="setMode('descanso_largo',15)" data-mode="descanso_largo">🌸 Descanso largo (15 min)</button>
+      </div>
+
+      <div class="timer-wrapper">
+        <div class="timer-ring" id="timer-ring">
+          <div class="timer-inner">
+            <div class="timer-display" id="timer-display">25:00</div>
+            <div class="timer-label" id="timer-label">ENFÓCATE ✨</div>
+          </div>
+        </div>
+
+        <div class="timer-btns">
+          <button class="btn-timer start" id="start-btn" onclick="toggleTimer()">▶ Iniciar</button>
+          <button class="btn-timer reset" onclick="resetTimer()">↺ Reiniciar</button>
+        </div>
+
+        <div class="pomo-sesiones">Sesiones completadas: <span id="sesiones-count">0</span> 🍅</div>
+
+        <div style="width:100%;padding-top:0.8rem;border-top:1px solid var(--rosa-claro);">
+          <div class="form-group">
+            <label>¿En qué estás trabajando?</label>
+            <input id="pomo-tarea" type="text" placeholder="Ej: Estudiar para parcial de Física">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="max-width:400px;margin:1rem auto 0;">
+      <div class="card-title">📖 ¿Qué es Pomodoro?</div>
+      <p style="font-size:0.88rem;color:var(--texto-suave);line-height:1.7;">
+        🍅 Trabaja <strong>25 minutos</strong> sin distracciones<br>
+        ☕ Descansa <strong>5 minutos</strong><br>
+        🔄 Repite 4 veces<br>
+        🌸 Luego descansa <strong>15-30 minutos</strong><br><br>
+        ¡Esta técnica mejora tu concentración y reduce el agotamiento!
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+let DATA = {
+  tareas: [],
+  notas: [],
+  horario: [],
+};
+
+function load() {
+  const saved = localStorage.getItem('kawaii_agenda_v2');
+  if (saved) {
+    try { DATA = { ...DATA, ...JSON.parse(saved) }; } catch(e) {}
+  }
+}
+function save() {
+  localStorage.setItem('kawaii_agenda_v2', JSON.stringify(DATA));
+}
+
+load();
+
+// ============================================================
+// NAV
+// ============================================================
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector(`[data-tab="${id}"]`).classList.add('active');
+  if (id === 'dashboard') renderDashboard();
+  if (id === 'tareas') renderTareas('todas');
+  if (id === 'notas') renderNotas();
+  if (id === 'horario') renderHorario(diaActivo);
+}
+
+// Fecha en header
+function updateFecha() {
+  const ahora = new Date();
+  const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  document.getElementById('fecha-header').innerHTML =
+    `${dias[ahora.getDay()]}, ${ahora.getDate()} ${meses[ahora.getMonth()]} ${ahora.getFullYear()}`;
+}
+updateFecha();
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+const frases = [
+  '¡Tú puedes lograrlo! Cada paso cuenta 🌸',
+  'El esfuerzo de hoy es el éxito del mañana 💪✨',
+  'Estudia duro, brilla fuerte 🌟',
+  'No te rindas, lo más difícil ya lo estás haciendo 🎀',
+  'Una tarea a la vez, sin prisa pero sin pausa 🐱',
+  'Eres más fuerte de lo que crees 💖',
+  'Cada hora de estudio te acerca a tu meta 📚',
+];
+
+function renderDashboard() {
+  const pendientes = DATA.tareas.filter(t => !t.completa).length;
+  const completas = DATA.tareas.filter(t => t.completa).length;
+  const hoy = new Date();
+  const proxSemana = new Date(hoy); proxSemana.setDate(proxSemana.getDate() + 7);
+  const examenes = DATA.tareas.filter(t => t.tipo === 'examen' && !t.completa &&
+    t.fecha && new Date(t.fecha) >= hoy && new Date(t.fecha) <= proxSemana).length;
+
+  document.getElementById('stat-pendientes').textContent = pendientes;
+  document.getElementById('stat-completas').textContent = completas;
+  document.getElementById('stat-examenes').textContent = examenes;
+
+  if (DATA.notas.length > 0) {
+    const prom = DATA.notas.reduce((a, n) => a + parseFloat(n.valor), 0) / DATA.notas.length;
+    document.getElementById('stat-promedio').textContent = prom.toFixed(1);
+  } else {
+    document.getElementById('stat-promedio').textContent = '—';
+  }
+
+  // Próximas
+  const lista = document.getElementById('proximas-lista');
+  const prox = DATA.tareas
+    .filter(t => !t.completa && t.fecha)
+    .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+    .slice(0, 5);
+
+  if (prox.length === 0) {
+    lista.innerHTML = '<div class="empty-state"><span class="emoji">🌸</span><p>Sin tareas pendientes. ¡Todo al día!</p></div>';
+  } else {
+    lista.innerHTML = prox.map(t => {
+      const dias = Math.ceil((new Date(t.fecha) - hoy) / (1000*60*60*24));
+      const urgente = dias <= 2;
+      return `<div class="prox-item" onclick="showSection('tareas')">
+        <span>${tipoEmoji(t.tipo)}</span>
+        <span style="flex:1;font-weight:700;font-size:0.9rem">${t.nombre}</span>
+        <span style="font-size:0.8rem;color:var(--texto-suave)">${t.materia}</span>
+        <span class="prox-badge ${urgente ? 'urgente' : ''}">
+          ${dias <= 0 ? '¡Hoy!' : dias === 1 ? 'Mañana' : `${dias}d`}
+        </span>
+      </div>`;
+    }).join('');
+  }
+
+  // Frase
+  document.getElementById('frase-dia').textContent = frases[new Date().getDay() % frases.length];
+}
+
+function tipoEmoji(tipo) {
+  const m = { tarea:'📝', examen:'📚', proyecto:'🎨', deber:'✏️', exposicion:'🎤', parcial:'📋', final:'🏆', quiz:'⚡' };
+  return m[tipo] || '📝';
+}
+
+// ============================================================
+// HORARIO
+// ============================================================
+let diaActivo = 'Lunes';
+
+function selectDia(dia) {
+  diaActivo = dia;
+  document.querySelectorAll('.dia-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.dia === dia);
+  });
+  renderHorario(dia);
+}
+
+function agregarClase() {
+  const materia = document.getElementById('h-materia').value.trim();
+  const dia = document.getElementById('h-dia').value;
+  const inicio = document.getElementById('h-inicio').value;
+  const fin = document.getElementById('h-fin').value;
+  const aula = document.getElementById('h-aula').value.trim();
+  const color = document.getElementById('h-color').value;
+
+  if (!materia || !inicio || !fin) { showToast('⚠️ Completa materia y horario'); return; }
+
+  DATA.horario.push({ materia, dia, inicio, fin, aula, color, id: Date.now() });
+  save();
+  renderHorario(diaActivo);
+  document.getElementById('h-materia').value = '';
+  document.getElementById('h-aula').value = '';
+  showToast('📅 Clase agregada!');
+}
+
+function renderHorario(dia) {
+  const clases = DATA.horario
+    .filter(c => c.dia === dia)
+    .sort((a, b) => a.inicio.localeCompare(b.inicio));
+
+  const cont = document.getElementById('horario-contenido');
+  if (clases.length === 0) {
+    cont.innerHTML = '<div class="empty-state"><span class="emoji">🌸</span><p>Sin clases este día. ¡Agrega una!</p></div>';
+    return;
+  }
+  cont.innerHTML = `<table class="horario-tabla">
+    <thead><tr><th>Hora</th><th>Materia</th><th>Aula</th><th></th></tr></thead>
+    <tbody>
+    ${clases.map(c => `
+      <tr class="horario-row">
+        <td>${c.inicio} – ${c.fin}</td>
+        <td><span class="materia-color" style="background:${c.color}"></span>${c.materia}</td>
+        <td style="color:var(--texto-suave)">${c.aula || '—'}</td>
+        <td>
+          <button class="icon-btn del" onclick="eliminarClase(${c.id})" title="Eliminar">🗑️</button>
+        </td>
+      </tr>
+    `).join('')}
+    </tbody>
+  </table>`;
+}
+
+function eliminarClase(id) {
+  DATA.horario = DATA.horario.filter(c => c.id !== id);
+  save();
+  renderHorario(diaActivo);
+  showToast('🗑️ Clase eliminada');
+}
+
+// ============================================================
+// TAREAS
+// ============================================================
+let filtroActivo = 'todas';
+
+function agregarTarea() {
+  const nombre = document.getElementById('t-nombre').value.trim();
+  const materia = document.getElementById('t-materia').value.trim();
+  const tipo = document.getElementById('t-tipo').value;
+  const fecha = document.getElementById('t-fecha').value;
+  const prioridad = document.getElementById('t-prioridad').value;
+  const notas = document.getElementById('t-notas').value.trim();
+
+  if (!nombre) { showToast('⚠️ Escribe el nombre de la tarea'); return; }
+
+  DATA.tareas.push({ nombre, materia, tipo, fecha, prioridad, notas, completa: false, id: Date.now() });
+  save();
+  renderTareas(filtroActivo);
+  renderDashboard();
+
+  document.getElementById('t-nombre').value = '';
+  document.getElementById('t-materia').value = '';
+  document.getElementById('t-notas').value = '';
+  document.getElementById('t-fecha').value = '';
+  showToast('🌸 Tarea agregada!');
+}
+
+function filtrarTareas(tipo) {
+  filtroActivo = tipo;
+  document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderTareas(tipo);
+}
+
+function renderTareas(filtro) {
+  filtroActivo = filtro;
+  const lista = document.getElementById('tareas-lista');
+  let tareas = [...DATA.tareas].sort((a, b) => {
+    if (a.completa !== b.completa) return a.completa ? 1 : -1;
+    if (a.fecha && b.fecha) return new Date(a.fecha) - new Date(b.fecha);
+    return 0;
+  });
+
+  if (filtro === 'pendiente') tareas = tareas.filter(t => !t.completa);
+  else if (filtro === 'completa') tareas = tareas.filter(t => t.completa);
+  else if (filtro === 'examen') tareas = tareas.filter(t => t.tipo === 'examen');
+  else if (filtro === 'tarea') tareas = tareas.filter(t => t.tipo === 'tarea' || t.tipo === 'deber');
+  else if (filtro === 'proyecto') tareas = tareas.filter(t => t.tipo === 'proyecto');
+
+  if (tareas.length === 0) {
+    lista.innerHTML = '<div class="empty-state"><span class="emoji">✨</span><p>No hay tareas aquí todavía</p></div>';
+    return;
+  }
+
+  lista.innerHTML = tareas.map(t => {
+    const hoy = new Date();
+    let diasStr = '';
+    if (t.fecha) {
+      const dias = Math.ceil((new Date(t.fecha) - hoy) / (1000*60*60*24));
+      if (dias < 0 && !t.completa) diasStr = `<span class="tag tag-urgente">¡Vencida!</span>`;
+      else if (dias === 0) diasStr = `<span class="tag tag-urgente">¡Hoy!</span>`;
+      else if (dias === 1) diasStr = `<span class="tag tag-urgente">Mañana</span>`;
+      else diasStr = `<span class="tag-fecha">📅 ${formatFecha(t.fecha)}</span>`;
+    }
+    return `<div class="tarea-item ${t.completa ? 'completa' : ''} ${t.tipo === 'examen' ? 'examen' : ''} ${t.prioridad === 'alta' && !t.completa ? 'urgente' : ''}">
+      <button class="check-btn ${t.completa ? 'checked' : ''}" onclick="toggleTarea(${t.id})" title="Marcar como completada"></button>
+      <div class="tarea-info">
+        <div class="tarea-nombre">${tipoEmoji(t.tipo)} ${t.nombre}</div>
+        <div class="tarea-meta">
+          ${t.materia ? `<span class="tag tag-materia">${t.materia}</span>` : ''}
+          <span class="tag tag-tipo-${t.tipo}">${t.tipo}</span>
+          ${diasStr}
+          ${t.prioridad === 'alta' ? '<span class="tag tag-urgente">🔴 Alta prioridad</span>' : ''}
+        </div>
+        ${t.notas ? `<div style="font-size:0.8rem;color:var(--texto-suave);margin-top:0.35rem;font-style:italic">${t.notas}</div>` : ''}
+      </div>
+      <div class="tarea-acciones">
+        <button class="icon-btn del" onclick="eliminarTarea(${t.id})" title="Eliminar">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleTarea(id) {
+  const t = DATA.tareas.find(t => t.id === id);
+  if (!t) return;
+  t.completa = !t.completa;
+  save();
+  renderTareas(filtroActivo);
+  renderDashboard();
+  if (t.completa) { showToast('✅ ¡Tarea completada! 🎉'); spawnConfetti(); }
+  else { showToast('↩️ Marcada como pendiente'); }
+}
+
+function eliminarTarea(id) {
+  DATA.tareas = DATA.tareas.filter(t => t.id !== id);
+  save();
+  renderTareas(filtroActivo);
+  renderDashboard();
+  showToast('🗑️ Tarea eliminada');
+}
+
+function formatFecha(f) {
+  if (!f) return '';
+  const [y, m, d] = f.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+// ============================================================
+// NOTAS
+// ============================================================
+function agregarNota() {
+  const materia = document.getElementById('n-materia').value.trim();
+  const tipo = document.getElementById('n-tipo').value;
+  const valor = parseFloat(document.getElementById('n-valor').value);
+  const minima = parseFloat(document.getElementById('n-minima').value) || 7;
+  const fecha = document.getElementById('n-fecha').value;
+  const comentario = document.getElementById('n-comentario').value.trim();
+
+  if (!materia) { showToast('⚠️ Escribe la materia'); return; }
+  if (isNaN(valor) || valor < 0 || valor > 10) { showToast('⚠️ Ingresa una nota válida (0-10)'); return; }
+
+  DATA.notas.push({ materia, tipo, valor, minima, fecha, comentario, id: Date.now() });
+  save();
+  renderNotas();
+  renderDashboard();
+
+  document.getElementById('n-materia').value = '';
+  document.getElementById('n-valor').value = '';
+  document.getElementById('n-fecha').value = '';
+  document.getElementById('n-comentario').value = '';
+  showToast('⭐ Nota guardada!');
+
+  if (valor >= 9) { showToast('🎉 ¡Excelente nota! 🌟'); spawnConfetti(); }
+}
+
+function renderNotas() {
+  const banner = document.getElementById('promedio-banner-wrap');
+  const lista = document.getElementById('notas-lista');
+
+  if (DATA.notas.length === 0) {
+    banner.innerHTML = '';
+    lista.innerHTML = '<div class="empty-state"><span class="emoji">⭐</span><p>Aún no has registrado notas.</p></div>';
+    return;
+  }
+
+  const prom = DATA.notas.reduce((a, n) => a + parseFloat(n.valor), 0) / DATA.notas.length;
+  const aprobadas = DATA.notas.filter(n => parseFloat(n.valor) >= n.minima).length;
+  banner.innerHTML = `<div class="promedio-banner">
+    <div>
+      <div class="label">Promedio general</div>
+      <div class="valor">${prom.toFixed(2)}</div>
+    </div>
+    <div style="margin-left:auto;text-align:right">
+      <div class="label">Aprobadas</div>
+      <div style="font-size:1.6rem;font-weight:900;color:var(--aprobado)">${aprobadas}/${DATA.notas.length}</div>
+    </div>
+  </div>`;
+
+  const sorted = [...DATA.notas].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+  lista.innerHTML = sorted.map(n => {
+    const val = parseFloat(n.valor);
+    const aprobado = val >= n.minima;
+    const clase = val >= 9 ? 'excelente' : aprobado ? 'aprobado' : 'reprobado';
+    const estado = val >= 9 ? '⭐ Excelente' : aprobado ? '✅ Aprobado' : '❌ Reprobado';
+    return `<div class="nota-item ${n.tipo}">
+      <div class="nota-header">
+        <div>
+          <div class="nota-materia">${tipoEmoji(n.tipo)} ${n.materia}</div>
+          <div class="nota-tipo">${n.tipo} ${n.fecha ? '· ' + formatFecha(n.fecha) : ''} · Mín: ${n.minima}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="nota-num ${clase}">${val.toFixed(1)}</div>
+          <div style="font-size:0.75rem;font-weight:700;color:var(--texto-suave)">${estado}</div>
+        </div>
+        <button class="icon-btn del" onclick="eliminarNota(${n.id})" style="align-self:flex-start">🗑️</button>
+      </div>
+      ${n.comentario ? `<div class="nota-comentario">"${n.comentario}"</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function eliminarNota(id) {
+  DATA.notas = DATA.notas.filter(n => n.id !== id);
+  save();
+  renderNotas();
+  renderDashboard();
+  showToast('🗑️ Nota eliminada');
+}
+
+// ============================================================
+// POMODORO
+// ============================================================
+let pomodoroInterval = null;
+let pomodoroSeconds = 25 * 60;
+let pomodoroTotal = 25 * 60;
+let pomodoroRunning = false;
+let sesiones = 0;
+let modoActual = 'trabajo';
+
+function setMode(modo, minutos) {
+  if (pomodoroRunning) return;
+  modoActual = modo;
+  pomodoroSeconds = minutos * 60;
+  pomodoroTotal = minutos * 60;
+  document.querySelectorAll('.pomo-mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === modo));
+  updateTimerDisplay();
+  const labels = { trabajo: 'ENFÓCATE ✨', descanso_corto: 'DESCANSA ☕', descanso_largo: 'RELÁJATE 🌸' };
+  document.getElementById('timer-label').textContent = labels[modo];
+}
+
+function toggleTimer() {
+  if (pomodoroRunning) {
+    clearInterval(pomodoroInterval);
+    pomodoroRunning = false;
+    document.getElementById('start-btn').textContent = '▶ Continuar';
+  } else {
+    pomodoroRunning = true;
+    document.getElementById('start-btn').textContent = '⏸ Pausar';
+    pomodoroInterval = setInterval(() => {
+      pomodoroSeconds--;
+      updateTimerDisplay();
+      if (pomodoroSeconds <= 0) {
+        clearInterval(pomodoroInterval);
+        pomodoroRunning = false;
+        document.getElementById('start-btn').textContent = '▶ Iniciar';
+        if (modoActual === 'trabajo') { sesiones++; document.getElementById('sesiones-count').textContent = sesiones; }
+        spawnConfetti();
+        showToast(modoActual === 'trabajo' ? '🍅 ¡Pomodoro completado! Tómate un descanso 🌸' : '💪 ¡Descanso terminado! A trabajar');
+      }
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(pomodoroInterval);
+  pomodoroRunning = false;
+  pomodoroSeconds = pomodoroTotal;
+  document.getElementById('start-btn').textContent = '▶ Iniciar';
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(pomodoroSeconds / 60);
+  const s = pomodoroSeconds % 60;
+  document.getElementById('timer-display').textContent =
+    String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+
+  const pct = 1 - (pomodoroSeconds / pomodoroTotal);
+  const deg = pct * 360;
+  document.getElementById('timer-ring').style.background =
+    `conic-gradient(var(--rosa-oscuro) ${deg}deg, rgba(255,182,193,0.2) ${deg}deg)`;
+}
+
+// ============================================================
+// UI HELPERS
+// ============================================================
+function showToast(msg) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2600);
+}
+
+function spawnConfetti() {
+  const colors = ['#FFB6C1','#D4B8E0','#FFE4EC','#E8879A','#7EC8A4','#fff'];
+  for (let i = 0; i < 18; i++) {
+    setTimeout(() => {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.cssText = `
+        left:${20 + Math.random()*60}%;
+        top:${20 + Math.random()*30}%;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        width:${6+Math.random()*8}px;
+        height:${6+Math.random()*8}px;
+      `;
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 1600);
+    }, i * 60);
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderDashboard();
+renderHorario('Lunes');
+</script>
+</body>
+</html>
